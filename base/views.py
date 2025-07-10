@@ -247,6 +247,7 @@ def user_profile(request):
             phone=request.POST.get('phone')
             bio=request.POST.get('about')
             skills=request.POST.get('skills')
+            profile_picture=request.FILES.get('profile-picture')
             
             
             
@@ -259,6 +260,7 @@ def user_profile(request):
             user.last_name=last_name
             user.bio=bio
             user.skills=skills
+            user.profile_picture=profile_picture
             user.save()
                     
             messages.success(request, 'Profile Updated')

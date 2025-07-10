@@ -1050,17 +1050,29 @@
                     </div>
 
                     <div class="tab-content" id="settings">
-                        <form class="settings-form" method="POST" action="">
+                        <form class="settings-form" method="POST" action="" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label class="form-label">Profile Picture</label>
-                                <div class="profile-avatar" style="margin: 0 0 1rem 0;">
+                                <div class="profile-avatar" style="margin: 0 0 1rem 0; background-image: url('{{request.user.profile_picture.url}}'); background-position:center; background-size: cover;">
+                                    {% if request.user.profile_picture %}
+                                    <div class="avatar-status"></div>
+                                    {% else %}
                                     {{request.user.name_abb}}
+                                    <div class="avatar-status"></div>
+                                    {% endif %}
+                                    
                                 </div>
 
                             </div>
 
                             <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="profile-picture">Change Profile Picture</label>
+                                    <input type="file" id="profile-picture" class="form-input" name="profile-picture"
+                                        accept="image/*">
+                                    <small class="form-text">Upload a new profile picture (optional)</small>
+                                </div>
                                 <div class="form-group">
                                     <label class="form-label" for="username">Username</label>
                                     <input type="text" id="username" class="form-input"
