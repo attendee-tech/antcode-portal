@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - AntCode Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variables */
+        :root {
+            --primary: #7e22ce;
+            --primary-light: #9333ea;
+            --primary-dark: #6b21a8;
+            --dark: #111827;
+            --dark-light: #1f2937;
+            --dark-darker: #030712;
+            --light: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 0.125rem;
+            --radius: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+            --radius-full: 9999px;
+        }
+
+        /* Dark Mode Variables */
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --bg-secondary: var(--dark-light);
+            --text-primary: #ffffff;
+            --text-secondary: var(--gray-400);
+            --border-color: rgb(138, 138, 138);
+            --input-bg: var(--dark-light);
+            --card-bg: var(--dark-light);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+            --progress-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Light Mode Variables */
+        .light-mode {
+            --bg-primary: var(--light);
+            --bg-secondary: #ffffff;
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --border-color: var(--gray-200);
+            --input-bg: #ffffff;
+            --card-bg: #ffffff;
+            --hover-bg: rgba(0, 0, 0, 0.05);
+            --progress-bg: var(--gray-200);
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .back-button:hover {
+            color: var(--text-primary);
+        }
+
+        .back-icon {
+            margin-right: 0.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* Profile Layout */
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        /* Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+            position: relative;
+        }
+
+        .avatar-status {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #10b981;
+            border: 3px solid var(--card-bg);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-role {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .profile-button {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .primary-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .primary-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .secondary-button {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .secondary-button:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .button-icon {
+            margin-right: 0.5rem;
+        }
+
+        /* Contact Info */
+        .contact-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-icon {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .contact-list {
+            list-style: none;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .contact-icon {
+            width: 1.5rem;
+            margin-right: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Skills */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Profile Content */
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--primary);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* About Section */
+        .about-section p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Reports Section */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .report-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .report-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .report-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .report-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .report-tag {
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            padding: 0.125rem 0.5rem;
+            border-radius: var(--radius-full);
+            font-size: 0.625rem;
+        }
+
+        /* Status Tag */
+        .status-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-on-track {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .status-at-risk {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .status-blocked {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-completed {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Activity Section */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .activity-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-link {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Projects Section */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .project-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .project-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .project-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .project-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .project-team {
+            display: flex;
+            align-items: center;
+        }
+
+        .team-avatars {
+            display: flex;
+            margin-right: 0.5rem;
+        }
+
+        .team-avatar {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.625rem;
+            margin-left: -0.5rem;
+            border: 2px solid var(--bg-secondary);
+        }
+
+        .team-avatar:first-child {
+            margin-left: 0;
+        }
+
+        .progress-container {
+            height: 0.5rem;
+            background-color: var(--progress-bg);
+            border-radius: var(--radius-full);
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: var(--radius-full);
+        }
+
+        /* Settings Section */
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 2rem;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            margin-right: 0.75rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        #info{
+            display:block;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-sidebar {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1.5rem;
+            }
+
+            .profile-card {
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 2rem;
+                margin: 0;
+                
+            }
+
+            .profile-info {
+                flex: 1;
+            }
+
+            .profile-stats {
+                margin-top: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-sidebar {
+                grid-template-columns: 0.97fr;
+            }
+
+            .profile-card {
+                text-align: center;
+                display: block;
+            }
+
+            .profile-avatar {
+                width: 120px;
+                height: 120px;
+                margin: 0 auto 1.5rem;
+            }
+
+            .reports-grid {
+                grid-template-columns: 0.97fr;
+            }
+
+            .form-row {
+                grid-template-columns: 0.97fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                align-self: flex-end;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+                padding-bottom: 0.5rem;
+            }
+            
+
+            
+        }
+    </style>
+</head>
+
+<body class="light-mode">
+    <div class="container">
+        <header class="header">
+            <a href="{% url 'home' %}" class="back-button">
+                <span class="back-icon"><i class="fas fa-arrow-left"></i></span>
+                Back to Dashboard
+            </a>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="profile-layout">
+            <div class="profile-sidebar">
+                <div class="card profile-card">
+                    
+                    {% if request.user.profile_picture %}
+                        <div class="profile-avatar" style="background-image: url('{{request.user.profile_picture.url}}'); background-position:center; background-size: cover;" >
+                        
+                        
+                        <div class="avatar-status"></div>
+                        </div>
+                        {% else %}
+
+                        <div class="profile-avatar">
+                        {{request.user.name_abb}}
+                        <div class="avatar-status"></div>
+                    </div>
+                    {% endif %}
+                        
+                    
+
+                    <div class="profile-info">
+                        <h1 class="profile-name">{{request.user.first_name}} {{request.user.last_name}}</h1>
+                        <div class="profile-role">{{request.user.option.name}}</div>
+
+                        {% for message in messages %}
+
+
+                        <p id="info" {% if message.error %} style="color:red" {% else %} style="color:greenyellow" {% endif %}>
+                            {{message}}</p>
+                        {% endfor %}
+
+
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <div class="stat-value">{{reports_count}}</div>
+                                <div class="stat-label">Reports</div>
+                            </div>
+
+                            <div class="stat">
+                                <div class="stat-value">{{projects_count}}</div>
+                                <div class="stat-label">Projects</div>
+                            </div>
+
+                            <div class="stat">
+                                <div class="stat-value">-</div>
+                                <div class="stat-label">Hours</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button class="profile-button primary-button">
+                                <span class="button-icon"><i class="fas fa-edit"></i></span>
+                                Edit Profile
+                            </button>
+
+                            <button class="profile-button secondary-button">
+                                <span class="button-icon"><i class="fas fa-share-alt"></i></span>
+                                Share Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card contact-info">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-address-card"></i></span>
+                        Contact Information
+                    </h2>
+
+                    <ul class="contact-list">
+                        <li class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-envelope"></i></span>
+                            <span>{{request.user.email}}</span>
+                        </li>
+
+                        <li class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-phone"></i></span>
+                            <span>+237{{request.user.phone}}</span>
+                        </li>
+
+                        <li class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+                            <span>Bambili - University of Bamenda</span>
+                        </li>
+
+
+
+
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2 class="section-title">
+                        <span class="section-icon"><i class="fas fa-code"></i></span>
+                        Skills
+                    </h2>
+
+                    <div class="skills-list">
+                        <span class="skill-tag">{{request.user.skills}}</span>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <div class="card">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="about">About</div>
+                        <div class="tab" data-tab="reports">Reports</div>
+                        
+                        <div class="tab" data-tab="projects">Projects</div>
+                        <div class="tab" data-tab="settings">Settings</div>
+                    </div>
+
+                    <div class="tab-content active" id="about">
+                        <div class="about-section">
+                            {{request.user.bio}}
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="reports">
+                        <div class="reports-grid">
+
+                            {% for report in reports %}
+
+
+
+                            <a href="{% url 'report' report.id %}" class="report-card">
+                                <h3 class="report-title">{{report.title}}</h3>
+                                <div class="report-meta">
+                                    <span>{{report.created}}</span>
+                                    <span>{{report.hourse_worked}} hours</span>
+                                </div>
+                                <div class="status-tag status-{{report.status}}">{{report.status}}</div>
+                                <div class="report-tags">
+                                    <span class="report-tag">{{report.tags}}</span>
+
+
+                                </div>
+                            </a>
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="activity">
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <div class="activity-title">Created a new report</div>
+                                        <div class="activity-time">Today at 10:23 AM</div>
+                                    </div>
+                                    <div class="activity-description">Created "API Integration Progress" report for the
+                                        Authentication System project.</div>
+                                    <a href="report.html" class="activity-link">View Report</a>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <div class="activity-title">Commented on a report</div>
+                                        <div class="activity-time">Yesterday at 4:15 PM</div>
+                                    </div>
+                                    <div class="activity-description">Commented on "Frontend Integration" report: "Let's
+                                        schedule a meeting to discuss the API endpoints needed for this feature."</div>
+                                    <a href="#" class="activity-link">View Comment</a>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <div class="activity-title">Completed a task</div>
+                                        <div class="activity-time">Yesterday at 2:30 PM</div>
+                                    </div>
+                                    <div class="activity-description">Completed "Implement JWT authentication" task in
+                                        the Authentication System project.</div>
+                                    <a href="#" class="activity-link">View Task</a>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-code-branch"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <div class="activity-title">Created a pull request</div>
+                                        <div class="activity-time">June 13, 2023 at 11:45 AM</div>
+                                    </div>
+                                    <div class="activity-description">Created pull request #42: "Feature: Implement
+                                        OAuth2 authentication flow"</div>
+                                    <a href="#" class="activity-link">View Pull Request</a>
+                                </div>
+                            </div>
+
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <div class="activity-title">Joined a project</div>
+                                        <div class="activity-time">June 10, 2023 at 9:00 AM</div>
+                                    </div>
+                                    <div class="activity-description">Joined the "Authentication System" project as a
+                                        lead developer.</div>
+                                    <a href="#" class="activity-link">View Project</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="projects">
+
+                        {% for project in projects %}
+
+
+
+                        <div class="projects-list">
+                            <div class="project-item">
+                                <div class="project-header">
+                                    <h3 class="project-title">Authentication System</h3>
+                                    <div class="status-tag status-on-track">On Track</div>
+                                </div>
+                                <div class="project-description">Implementing a secure, scalable authentication system
+                                    with support for multiple authentication methods and role-based access control.
+                                </div>
+                                <div class="project-meta">
+                                    <div class="project-team">
+                                        <div class="team-avatars">
+                                            <div class="team-avatar">JD</div>
+                                            <div class="team-avatar">AS</div>
+                                            <div class="team-avatar">RJ</div>
+                                        </div>
+                                        <span>3 members</span>
+                                    </div>
+                                    <div class="project-deadline">Due: July 15, 2023</div>
+                                </div>
+                                <div class="progress-container">
+                                    <div class="progress-bar" style="width: 65%"></div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="tab-content" id="settings">
+                        <form class="settings-form" method="POST" action="">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="form-label">Profile Picture</label>
+                                <div class="profile-avatar" style="margin: 0 0 1rem 0;">
+                                    {{request.user.name_abb}}
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="username">Username</label>
+                                    <input type="text" id="username" class="form-input"
+                                        value="{{request.user.username}}" name="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="first-name">First Name</label>
+                                    <input type="text" id="first-name" class="form-input"
+                                        value="{{request.user.first_name}}" name="first-name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="last-name">Last Name</label>
+                                    <input type="text" id="last-name" class="form-input"
+                                        value="{{request.user.last_name}}" name="last-name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" class="form-input" value="{{request.user.email}}"
+                                    name="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="form-input" value="{{request.user.phone}}"
+                                    name="phone">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="role">Job Title</label>
+                                <input type="text" id="role" class="form-input" value="{{request.user.option.name}}"
+                                    readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="location">Location</label>
+                                <input type="text" id="location" class="form-input" value="Bamenda Bambili" readonly>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="bio">Bio</label>
+                                <textarea id="bio" class="form-input" rows="4"
+                                    name="about">{{request.user.bio}}</textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="skills">Skills (comma separated)</label>
+                                <input type="text" id="skills" class="form-input" value="{{request.user.skills}}"
+                                    name="skills">
+                            </div>
+
+                            <div class="form-actions">
+                                <button class="profile-button secondary-button">Cancel</button>
+                                <button class="profile-button primary-button">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+        <span class="toast-message" id="toast-message">{{messages}}</span>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            enableDarkMode();
+        } else {
+            enableLightMode();
+        }
+
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+
+        function enableLightMode() {
+            body.classList.add('light-mode');
+            body.classList.remove('dark-mode');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+
+        // Tab Functionality
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+
+                // Remove active class from all tabs and contents
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Toast Notification
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Form Submission
+        const saveButton = document.querySelector('.primary-button');
+        const shareButton = document.querySelector('.profile-button.secondary-button');
+        const editButton = document.querySelector('.profile-button.primary-button');
+
+
+
+        if (shareButton) {
+            shareButton.addEventListener('click', () => {
+                // In a real implementation, this would open a share dialog
+                showToast('Profile sharing link copied to clipboard!');
+            });
+        }
+
+        if (editButton) {
+            editButton.addEventListener('click', () => {
+                // Switch to settings tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                document.querySelector('[data-tab="settings"]').classList.add('active');
+                document.getElementById('settings').classList.add('active');
+
+                // Scroll to settings form
+                document.getElementById('settings').scrollIntoView({ behavior: 'smooth' });
+            });
+
+        }
+        const info=document.getElementById('info')
+        setTimeout(() => {
+                info.style.display='none'
+            }, 3000);
+        
+        
+    </script>
+    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'94ea5b785223d81f',t:'MTc0OTc0MTg4OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
+</body>
+
+</html>

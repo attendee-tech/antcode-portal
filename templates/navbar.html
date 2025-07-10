@@ -1,0 +1,94 @@
+<div class="sidebar-header">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#7e22ce" />
+                        <path d="M2 17L12 22L22 17" stroke="#7e22ce" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M2 12L12 17L22 12" stroke="#7e22ce" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    <span class="logo-text">AntCode Hub</span>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <nav>
+                    
+                    
+                        <a href="{% url 'home' %}" 
+                        
+                        {% if request.path == '/AntCode/home/' %}
+                            class="sidebar-link active"
+                            {%else%}
+                            class="sidebar-link"
+                        {% endif %}
+                            
+                        
+                        >
+                        <i class="fas fa-home sidebar-icon"></i>
+                        <span>Dashboard</span>
+                        </a>
+                    
+                        
+                    
+                    <a href="" 
+                        {% if request.path == '/AntCode/projects/' %}
+                            class="sidebar-link active"
+                            {%else%}
+                            class="sidebar-link"
+                        {% endif %}
+                    >
+                        <i class="fas fa-code sidebar-icon"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="{% url 'reports' %}" 
+                        {% if request.path == '/AntCode/daily-reports/' %}
+                            class="sidebar-link active"
+                            {%else%}
+                            class="sidebar-link"
+                        {% endif %}
+                    >
+                        <i class="fas fa-file-alt sidebar-icon"></i>
+                        <span>Daily Reports</span>
+                    </a>
+                    <a href="{% url 'classmates' %}" 
+                        {% if request.path == '/AntCode/classmates/' %}
+                            class="sidebar-link active"
+                            {%else%}
+                            class="sidebar-link"
+                        {% endif %}
+                    >
+                        <i class="fas fa-users sidebar-icon"></i>
+                        <span>Classmates</span>
+                    </a>
+                    <a href="{% url 'profile' %}" 
+                        {% if request.path == '/AntCode/profile/' %}
+                            class="sidebar-link active"
+                            {%else%}
+                            class="sidebar-link"
+                        {% endif %}
+                    >
+                        <i class="fas fa-user sidebar-icon"></i>
+                        <span>Profile</span>
+                    </a>
+
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    {% if request.user.profile_picture %}
+                <div class="avatar" style="background-image: url('{{request.user.profile_picture.url}}'); background-position:center; background-size: cover;"></div>
+                {% else %}
+                <div class="avatar">{{request.user.name_abb}}</div>
+                    
+                {% endif %}
+                    
+                
+                    <div class="user-details">
+                        <div class="user-name">{{request.user.first_name}} {{request.user.last_name}}</div>
+                        <div class="user-role">{{request.user.option.name}}</div>
+                    </div>
+                    <button class="logout-button" onclick="window.location.href='{% url 'logout' %}'">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>

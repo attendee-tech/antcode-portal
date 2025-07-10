@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AntCode Hub - Daily Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Variables */
+        :root {
+            --primary: #7e22ce;
+            --primary-light: #9333ea;
+            --primary-dark: #6b21a8;
+            --dark: #111827;
+            --dark-light: #1f2937;
+            --dark-darker: #030712;
+            --light: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 0.125rem;
+            --radius: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+            --radius-full: 9999px;
+        }
+        
+        /* Dark Mode Variables */
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --bg-secondary: var(--dark-light);
+            --text-primary: #ffffff;
+            --text-secondary: var(--gray-400);
+            --border-color: rgb(165, 165, 165);
+            --input-bg: var(--dark-light);
+            --card-bg: var(--dark-light);
+            --sidebar-bg: var(--dark-darker);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Light Mode Variables */
+        .light-mode {
+            --bg-primary: var(--light);
+            --bg-secondary: #ffffff;
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --border-color: var(--gray-200);
+            --input-bg: #ffffff;
+            --card-bg: #ffffff;
+            --sidebar-bg: var(--primary);
+            --hover-bg: rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+        
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        /* Sidebar */
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .logo-text {
+            margin-left: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            margin: 0.25rem 0.75rem;
+            border-radius: var(--radius-md);
+        }
+
+        .sidebar-link:hover {
+            background-color: rgba(126, 34, 206, 0.1);
+        }
+
+        .sidebar-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .sidebar-icon {
+            width: 1.5rem;
+            text-align: center;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-details {
+            margin-left: 0.75rem;
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .logout-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .logout-button:hover {
+            color: var(--text-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+        
+        /* Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            display: block;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        /* Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            background-position: right 1rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25em;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            min-height: 150px;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: background-color 0.2s, color 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .tag {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tag-remove {
+            margin-left: 0.25rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .tag-remove:hover {
+            opacity: 1;
+        }
+        
+        /* Recent Reports */
+        .reports-list {
+            margin-top: 1rem;
+        }
+        
+        .report-item {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin-bottom: 0.75rem;
+            transition: background-color 0.2s;
+        }
+        
+        .report-item:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-title {
+            font-weight: 500;
+        }
+        
+        .report-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .report-content {
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .report-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .report-tags {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .report-action {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .report-action:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        .mobile-sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 40;
+            display: none;
+        }
+        .close-sidebar-button {
+            position: fixed;
+            z-index: 99;
+            top:1rem;
+            right: 2px;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                z-index: 100;
+                width: 220px;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            .card {
+                margin-bottom: 1.25rem;
+                padding: 1rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 80vw;
+                min-width: 200px;
+                max-width: 320px;
+            }
+            .main-content {
+                padding: 0.5rem;
+            }
+            .card {
+                padding: 0.75rem;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .btn-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .mobile-menu-toggle{
+                display: block;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100vw;
+                min-width: unset;
+            }
+            .main-content {
+                padding: 0.25rem;
+            }
+            .card {
+                padding: 0.5rem;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .header {
+                margin-bottom: 1rem;
+            }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Add some spacing between cards and edges */
+        .main-content {
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem 2rem 2rem 2rem;
+            box-sizing: border-box;
+        }
+
+        /* Make cards stack with spacing */
+        .card {
+            margin-bottom: 2rem;
+        }
+
+        /* Make form fields more readable on mobile */
+        .form-input,
+        .form-select,
+        .form-textarea {
+            font-size: 1rem;
+        }
+
+        /* Improve tags wrapping on mobile */
+        .tags-container {
+            gap: 0.25rem;
+        }
+
+        
+        .report-tags {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .overlay {
+                display: block;
+            }
+        }
+
+        /* Add a little shadow to the sidebar on mobile */
+        .sidebar {
+            box-shadow: 2px 0 8px rgba(0,0,0,0.07);
+        }
+
+        /* Make toast notification smaller on mobile */
+       
+    </style>
+</head>
+<body class="light-mode">
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Sidebar -->
+     <div class="mobile-sidebar-backdrop" id="mobile-sidebar-backdrop"></div>
+     <button class="close-sidebar-button" id="close-sidebar-button">
+        <i class="fas fa-times"></i>
+     </button>
+    <aside class="sidebar" id="sidebar">
+        {% include 'navbar.html' %}
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="header">
+            
+            <h1 class="page-title">Daily Reports</h1>
+            <div class="header-actions">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+                
+            </button>
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+                
+            </div>
+        </div>
+
+        <!-- New Report Form -->
+        <div class="card">
+            <div class="card-header">
+                
+                {% if report %}
+                    <h2 class="card-title">Edit Report</h2>
+                    {% else %}
+                    <h2 class="card-title">Create New Report</h2>
+                    {% for message in messages %}
+                    <p 
+                    {% if message.error %}
+                        style="color:red"
+                        {% else %}
+                        style="color:greenyellow"
+                    {% endif %}
+                        >{{message}}</p>
+                {% endfor %}
+                {% endif %}
+                
+                
+                    
+                    
+                
+            </div>
+            <form id="report-form" action="" method="POST">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="report-title" class="form-label">Report Title</label>
+                            <input type="text" id="report-title" class="form-input" name="title" placeholder="Enter a descriptive title" value="{{report.title}}" required>
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="form-group">
+                    <label for="report-content" class="form-label">Report Content</label>
+                    <textarea id="report-content" name="content" class="form-textarea" placeholder="Describe what you've accomplished today, any challenges faced, and your plans for tomorrow..."  required>{{report.content}}</textarea>
+                    <div class="char-counter"><span id="char-count">0</span> / 2000 characters</div>
+                </div>
+                <div class="form-group">
+                    <label for="report-tags" class="form-label">Tags</label>
+                    <input type="text" id="report-tags" name="tags" class="form-input" placeholder="Add tags (press Enter after each tag)" value="{{report.tags}}">
+                    <div class="tags-container" id="tags-container"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="report-hours" class="form-label">Hours Worked</label>
+                            <input type="number" id="report-hours" name="hours" class="form-input" min="0" max="24" step="0.5" placeholder="e.g. 8.5" value="{{report.hourse_worked}}" required>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="report-status" class="form-label">Status(your situation on this report)</label>
+                            <select id="report-status" name="status" class="form-select" required >
+                                <option value="on-track">On Track</option>
+                                <option value="at-risk">At Risk</option>
+                                <option value="blocked">Blocked</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                        Submit Report
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="save-draft">
+                        <span class="btn-icon"><i class="fas fa-save"></i></span>
+                        Save as Draft
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Recent Reports</h2>
+            </div>
+            <div class="reports-list" id="reports-list">
+                
+                {% for report in reports  %}
+                
+                {% if not reports %}
+                    <p>No reports created! Create your fisrt report above</p>
+                {% endif %}
+                    
+                <div class="report-item">
+
+                    <div class="report-header">
+                        <h3 class="report-title">{{report.title}}</h3>
+                        <span class="report-date">{{report.created}}</span>
+                    </div>
+                    <div class="report-content">{{report.summary}}</div>
+                    <div class="report-footer">
+                        <div class="report-tags">
+                            <div class="tag" id="tag-status" 
+                            {% if report.status == 'at-risk' %}
+                                style="background-color: #f59e0b20; color: #f59e0b; border: 1px solid #f59e0b40;"
+                                {% elif report.status == 'on-track' %}
+                                style="background-color: #10b98120; color: #10b981; border: 1px solid #10b98140;"
+                                 {% elif report.status == 'completed' %}
+                                style="background-color: #3b82f620; color:#3b82f6; border: 1px solid #3b82f640;"
+                                 {% elif report.status == 'blocked' %}
+                                style="background-color: #ef444420; color: #ef4444; border: 1px solid #ef444440;"
+                                 {% else %}
+                                style="background-color: #f59e0b20; color: #f59e0b; border: 1px solid #f59e0b40;"
+                            {% endif %}
+                            >
+                                {{report.status}}
+                            </div>
+                            
+                            <div class="tag">
+                                {{report.hourse_worked}} hrs
+                            </div>
+                        </div>
+                        <div class="report-actions">
+                            <button class="report-action" title="Edit" onclick="window.location.href='{% url 'edit' report.id%}'">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form action="{% url 'delete' report.id %}"method="POST">
+                                {% csrf_token %}
+                                <button class="report-action" title="Delete" onclick="window.location.href='{% url 'delete' report.id%}'">
+                                    <i class="fas fa-trash-alt"></i>
+                            </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                    
+            </div>
+        </div>
+    </main>
+    
+    <!-- Toast Notification -->
+    
+    
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            enableDarkMode();
+        } else {
+            enableLightMode();
+        }
+        
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+        
+        function enableLightMode() {
+            body.classList.add('light-mode');
+            body.classList.remove('dark-mode');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+        
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const mobileSidebarBackdrop = document.getElementById('mobile-sidebar-backdrop');
+        const closeSidebarButton = document.getElementById('close-sidebar-button');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            sidebar.classList.add('active');
+            mobileSidebarBackdrop.style.display = 'block';
+            closeSidebarButton.style.display = 'flex'
+        });
+
+        function closeMobileSidebar() {
+            sidebar.classList.remove('active');
+            mobileSidebarBackdrop.style.display = 'none';
+            closeSidebarButton.style.display = 'none'
+        }
+
+        closeSidebarButton.addEventListener('click', closeMobileSidebar);
+        mobileSidebarBackdrop.addEventListener('click', closeMobileSidebar);
+        
+        
+        
+        mobileSidebarBackdrop.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        const reportContent = document.getElementById('report-content');
+        const charCount = document.getElementById('char-count');
+        const maxChars = 2000;
+        
+        reportContent.addEventListener('input', () => {
+            const count = reportContent.value.length;
+            charCount.textContent = count;
+            
+            if (count > maxChars) {
+                charCount.style.color = '#ef4444';
+            } else {
+                charCount.style.color = '';
+            }
+        });
+        
+        
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'94ea47c9b7d56491',t:'MTc0OTc0MTA4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

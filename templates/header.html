@@ -1,0 +1,29 @@
+<header class="header">
+    <button class="mobile-menu-button" id="mobile-menu-button">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="search" class="search-input" placeholder="Search">
+    </div>
+    <div class="header-actions">
+        <button class="header-button" id="theme-toggle">
+            <i class="fas fa-moon" id="theme-icon"></i>
+        </button>
+
+        <div style="position: relative;">
+            <button class="header-button" id="user-menu-button" onclick=window.location.href="{% url 'profile' %}">
+                
+                
+                {% if request.user.profile_picture %}
+                <div class="avatar" style="background-image: url('{{request.user.profile_picture.url}}'); background-position:center; background-size: cover;"></div>
+                {% else %}
+                <div class="avatar">{{request.user.name_abb}}</div>
+                    
+                {% endif %}
+                    
+            </button>
+
+        </div>
+    </div>
+</header>
