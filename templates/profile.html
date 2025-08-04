@@ -776,7 +776,7 @@
 <body class="light-mode">
     <div class="container">
         <header class="header">
-            <a href="{% url 'home' %}" class="back-button">
+            <a onclick="window.history.back()" class="back-button">
                 <span class="back-icon"><i class="fas fa-arrow-left"></i></span>
                 Back to Dashboard
             </a>
@@ -928,6 +928,8 @@
 
                                 </div>
                             </a>
+                            {% empty %}
+                            <p>No reports created</p>
                             {% endfor %}
 
 
@@ -951,65 +953,6 @@
                                 </div>
                             </div>
 
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-comment"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-header">
-                                        <div class="activity-title">Commented on a report</div>
-                                        <div class="activity-time">Yesterday at 4:15 PM</div>
-                                    </div>
-                                    <div class="activity-description">Commented on "Frontend Integration" report: "Let's
-                                        schedule a meeting to discuss the API endpoints needed for this feature."</div>
-                                    <a href="#" class="activity-link">View Comment</a>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-header">
-                                        <div class="activity-title">Completed a task</div>
-                                        <div class="activity-time">Yesterday at 2:30 PM</div>
-                                    </div>
-                                    <div class="activity-description">Completed "Implement JWT authentication" task in
-                                        the Authentication System project.</div>
-                                    <a href="#" class="activity-link">View Task</a>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-code-branch"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-header">
-                                        <div class="activity-title">Created a pull request</div>
-                                        <div class="activity-time">June 13, 2023 at 11:45 AM</div>
-                                    </div>
-                                    <div class="activity-description">Created pull request #42: "Feature: Implement
-                                        OAuth2 authentication flow"</div>
-                                    <a href="#" class="activity-link">View Pull Request</a>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="activity-content">
-                                    <div class="activity-header">
-                                        <div class="activity-title">Joined a project</div>
-                                        <div class="activity-time">June 10, 2023 at 9:00 AM</div>
-                                    </div>
-                                    <div class="activity-description">Joined the "Authentication System" project as a
-                                        lead developer.</div>
-                                    <a href="#" class="activity-link">View Project</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -1054,6 +997,7 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 <label class="form-label">Profile Picture</label>
+                                {% if request.user.profile_picture %}
                                 <div class="profile-avatar" style="margin: 0 0 1rem 0; background-image: url('{{request.user.profile_picture.url}}'); background-position:center; background-size: cover;">
                                     {% if request.user.profile_picture %}
                                     <div class="avatar-status"></div>
@@ -1063,6 +1007,16 @@
                                     {% endif %}
                                     
                                 </div>
+                                {% else %}
+
+                                <div class="profile-avatar" style="margin: 0 0 1rem 0;">
+                                    
+                                    {{request.user.name_abb}}
+                                    <div class="avatar-status"></div>
+                                    
+                                    
+                                </div>
+                                {% endif %}
 
                             </div>
 
@@ -1081,13 +1035,13 @@
                                 <div class="form-group">
                                     <label class="form-label" for="first-name">First Name</label>
                                     <input type="text" id="first-name" class="form-input"
-                                        value="{{request.user.first_name}}" name="first-name">
+                                        value="{{request.user.first_name}}" name="first_name">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-label" for="last-name">Last Name</label>
                                     <input type="text" id="last-name" class="form-input"
-                                        value="{{request.user.last_name}}" name="last-name">
+                                        value="{{request.user.last_name}}" name="last_name">
                                 </div>
                             </div>
 
@@ -1223,7 +1177,7 @@
 
         if (shareButton) {
             shareButton.addEventListener('click', () => {
-                // In a real implementation, this would open a share dialog
+                
                 showToast('Profile sharing link copied to clipboard!');
             });
         }

@@ -1,0 +1,1066 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Progress - AntCode Hub Report</title>
+    <meta name="description" content="Completed the authentication endpoints and started working on the data retrieval APIs. Found some issues with rate limiting that need to be addressed.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://antcodehub.com/reports/123">
+    <meta property="og:title" content="API Integration Progress - AntCode Hub Report">
+    <meta property="og:description" content="Completed the authentication endpoints and started working on the data retrieval APIs. Found some issues with rate limiting that need to be addressed.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://antcodehub.com/reports/123">
+    <meta property="twitter:title" content="API Integration Progress - AntCode Hub Report">
+    <meta property="twitter:description" content="Completed the authentication endpoints and started working on the data retrieval APIs. Found some issues with rate limiting that need to be addressed.">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Variables */
+        :root {
+            --primary: #7e22ce;
+            --primary-light: #9333ea;
+            --primary-dark: #6b21a8;
+            --dark: #111827;
+            --dark-light: #1f2937;
+            --dark-darker: #030712;
+            --light: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-sm: 0.125rem;
+            --radius: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+            --radius-full: 9999px;
+        }
+        
+        /* Dark Mode Variables */
+        .dark-mode {
+            --bg-primary: var(--dark);
+            --bg-secondary: var(--dark-light);
+            --text-primary: #ffffff;
+            --text-secondary: var(--gray-400);
+            --border-color: var(--dark-light);
+            --input-bg: var(--dark-light);
+            --card-bg: var(--dark-light);
+            --hover-bg: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Light Mode Variables */
+        .light-mode {
+            --bg-primary: var(--light);
+            --bg-secondary: #ffffff;
+            --text-primary: var(--gray-900);
+            --text-secondary: var(--gray-600);
+            --border-color: var(--gray-200);
+            --input-bg: #ffffff;
+            --card-bg: #ffffff;
+            --hover-bg: rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+        }
+        
+        button {
+            cursor: pointer;
+            font-family: inherit;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .back-button:hover {
+            color: var(--text-primary);
+        }
+        
+        .back-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            transition: background-color 0.2s, color 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        /* Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Report Header */
+        .report-header {
+            margin-bottom: 1.5rem;
+        }
+        
+        .report-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        
+        .report-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .report-meta-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .meta-icon {
+            margin-right: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        /* Report Content */
+        .report-content {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+        
+        .report-content p {
+            margin-bottom: 1rem;
+        }
+        
+        /* Tags */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tag {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Status Tag */
+        .status-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-on-track {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .status-at-risk {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .status-blocked {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .status-completed {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Author */
+        .author-container {
+            display: flex;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+        }
+        
+        .author-info {
+            flex: 1;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .author-role {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Share Section */
+        .share-section {
+            margin-top: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .share-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .share-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, color 0.2s, transform 0.2s;
+        }
+        
+        .share-button:hover {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        
+        .share-button.whatsapp:hover {
+            background-color: rgba(37, 211, 102, 0.1);
+            color: #25d366;
+            border-color: rgba(37, 211, 102, 0.2);
+        }
+        
+        .share-button.linkedin:hover {
+            background-color: rgba(0, 119, 181, 0.1);
+            color: #0077b5;
+            border-color: rgba(0, 119, 181, 0.2);
+        }
+        
+        .share-button.twitter:hover {
+            background-color: rgba(29, 161, 242, 0.1);
+            color: #1da1f2;
+            border-color: rgba(29, 161, 242, 0.2);
+        }
+        
+        .share-button.facebook:hover {
+            background-color: rgba(59, 89, 152, 0.1);
+            color: #3b5998;
+            border-color: rgba(59, 89, 152, 0.2);
+        }
+        
+        .share-button.email:hover {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: #ea4335;
+            border-color: rgba(234, 67, 53, 0.2);
+        }
+        
+        .share-link-container {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .share-link {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: var(--radius-md) 0 0 var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .copy-button {
+            padding: 0.75rem 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .copy-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .copy-icon {
+            margin-right: 0.5rem;
+        }
+        
+        /* QR Code */
+        .qr-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+        }
+        
+        .qr-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .qr-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .qr-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .download-qr {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .download-qr:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .download-icon {
+            margin-right: 0.5rem;
+        }
+        
+        /* Comments */
+        .comments-section {
+            margin-top: 2rem;
+        }
+        
+        .comment-form {
+            margin-bottom: 1.5rem;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background-color: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
+        }
+        
+        .comment-button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: background-color 0.2s;
+        }
+        
+        .comment-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .comments-list {
+            margin-top: 1.5rem;
+        }
+        
+        .comment {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+        
+        .comment-name {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .comment-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .comment-content {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        /* Related Reports */
+        .related-reports {
+            margin-top: 2rem;
+        }
+        
+        .related-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .related-item {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        
+        .related-item:hover {
+            background-color: var(--hover-bg);
+            transform: translateY(-2px);
+        }
+        
+        .related-title {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .related-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+        
+        .toast-icon {
+            margin-right: 0.75rem;
+        }
+        
+        .toast-message {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+            
+            .report-title {
+                font-size: 1.5rem;
+            }
+            
+            .report-meta {
+                gap: 1rem;
+            }
+            
+            .qr-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .related-list {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                align-self: flex-end;
+            }
+            
+            .share-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        <header class="header">
+            <a onclick="window.history.back()" class="back-button">
+                <span class="back-icon"><i class="fas fa-arrow-left"></i></span>
+                Back to Reports
+            </a>
+            
+            <div class="header-actions">
+                <button class="theme-toggle" id="theme-toggle">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+        </header>
+        
+        <div class="card">
+            <div class="report-header">
+                <h1 class="report-title">{{report.title}}</h1>
+                
+                <div class="report-meta">
+                    <div class="report-meta-item">
+                        <span class="meta-icon"><i class="fas fa-folder"></i></span>
+                        <span>{{report.title}}</span>
+                    </div>
+                    
+                    <div class="report-meta-item">
+                        <span class="meta-icon"><i class="fas fa-calendar"></i></span>
+                        <span>{{report.created}}</span>
+                    </div>
+                    
+                    <div class="report-meta-item">
+                        <span class="meta-icon"><i class="fas fa-clock"></i></span>
+                        <span>{{report.hourse_worked}} HRS</span>
+                    </div>
+                    
+                    <div class="report-meta-item">
+                        <span class="status-tag status-{{report.status}}">{{report.status}}</span>
+                    </div>
+                </div>
+                
+                <div class="tags-container">
+                    <div class="tag">{{report.tags}}</div>
+                    
+                </div>
+            </div>
+            
+            <div class="report-content" id="summary">
+                <p>{{report.content}}</p>
+            </div>
+            
+            <div class="author-container">
+                <div class="author-avatar">{{request.user.name_abb}}</div>
+                <div class="author-info">
+                    <div class="author-name">{{request.user.first_name}} {{request.user.last_name}}</div>
+                    <div class="author-role">{{request.user.option.name}}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card share-section">
+            <h2 class="section-title">Share this report</h2>
+            
+            <div class="share-options">
+                <button class="share-button whatsapp" id="share-whatsapp" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </button>
+                <button class="share-button linkedin" id="share-linkedin" title="Share on LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </button>
+                <button class="share-button twitter" id="share-twitter" title="Share on Twitter">
+                    <i class="fab fa-twitter"></i>
+                </button>
+                <button class="share-button facebook" id="share-facebook" title="Share on Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button class="share-button email" id="share-email" title="Share via Email">
+                    <i class="fas fa-envelope"></i>
+                </button>
+            </div>
+            
+            <div class="share-link-container">
+                <div class="share-link" id="share-link">http://127.0.0.1{{request.path}}</div>
+                <button class="copy-button" id="copy-link">
+                    <span class="copy-icon"><i class="fas fa-copy"></i></span>
+                    Copy
+                </button>
+            </div>
+            
+            <div class="qr-section">
+                <div class="qr-code">
+                    <svg id="qrcode" width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- QR Code SVG -->
+                        <rect x="10" y="10" width="10" height="10" fill="black"/>
+                        <rect x="20" y="10" width="10" height="10" fill="black"/>
+                        <rect x="30" y="10" width="10" height="10" fill="black"/>
+                        <rect x="40" y="10" width="10" height="10" fill="black"/>
+                        <rect x="50" y="10" width="10" height="10" fill="black"/>
+                        <rect x="60" y="10" width="10" height="10" fill="black"/>
+                        <rect x="70" y="10" width="10" height="10" fill="black"/>
+                        <rect x="10" y="20" width="10" height="10" fill="black"/>
+                        <rect x="70" y="20" width="10" height="10" fill="black"/>
+                        <rect x="10" y="30" width="10" height="10" fill="black"/>
+                        <rect x="30" y="30" width="10" height="10" fill="black"/>
+                        <rect x="40" y="30" width="10" height="10" fill="black"/>
+                        <rect x="50" y="30" width="10" height="10" fill="black"/>
+                        <rect x="70" y="30" width="10" height="10" fill="black"/>
+                        <rect x="10" y="40" width="10" height="10" fill="black"/>
+                        <rect x="30" y="40" width="10" height="10" fill="black"/>
+                        <rect x="50" y="40" width="10" height="10" fill="black"/>
+                        <rect x="70" y="40" width="10" height="10" fill="black"/>
+                        <rect x="10" y="50" width="10" height="10" fill="black"/>
+                        <rect x="30" y="50" width="10" height="10" fill="black"/>
+                        <rect x="50" y="50" width="10" height="10" fill="black"/>
+                        <rect x="70" y="50" width="10" height="10" fill="black"/>
+                        <rect x="10" y="60" width="10" height="10" fill="black"/>
+                        <rect x="70" y="60" width="10" height="10" fill="black"/>
+                        <rect x="10" y="70" width="10" height="10" fill="black"/>
+                        <rect x="20" y="70" width="10" height="10" fill="black"/>
+                        <rect x="30" y="70" width="10" height="10" fill="black"/>
+                        <rect x="40" y="70" width="10" height="10" fill="black"/>
+                        <rect x="50" y="70" width="10" height="10" fill="black"/>
+                        <rect x="60" y="70" width="10" height="10" fill="black"/>
+                        <rect x="70" y="70" width="10" height="10" fill="black"/>
+                        <rect x="30" y="20" width="10" height="10" fill="black"/>
+                        <rect x="40" y="20" width="10" height="10" fill="black"/>
+                        <rect x="50" y="20" width="10" height="10" fill="black"/>
+                        <rect x="20" y="30" width="10" height="10" fill="black"/>
+                        <rect x="60" y="30" width="10" height="10" fill="black"/>
+                        <rect x="20" y="40" width="10" height="10" fill="black"/>
+                        <rect x="40" y="40" width="10" height="10" fill="black"/>
+                        <rect x="60" y="40" width="10" height="10" fill="black"/>
+                        <rect x="20" y="50" width="10" height="10" fill="black"/>
+                        <rect x="40" y="50" width="10" height="10" fill="black"/>
+                        <rect x="60" y="50" width="10" height="10" fill="black"/>
+                        <rect x="20" y="60" width="10" height="10" fill="black"/>
+                        <rect x="30" y="60" width="10" height="10" fill="black"/>
+                        <rect x="40" y="60" width="10" height="10" fill="black"/>
+                        <rect x="50" y="60" width="10" height="10" fill="black"/>
+                        <rect x="60" y="60" width="10" height="10" fill="black"/>
+                        <!-- AntCode Hub Logo in center -->
+                        <rect x="30" y="30" width="30" height="30" fill="white" rx="5"/>
+                        <path d="M40 35L35 40L40 45L45 40L40 35Z" fill="#7e22ce"/>
+                        <path d="M35 50L40 55L45 50" stroke="#7e22ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M35 45L40 50L45 45" stroke="#7e22ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                
+                <div class="qr-info">
+                    <h3 class="qr-title">Scan to view on mobile</h3>
+                    <p class="qr-description">Use your phone's camera to scan this QR code and open this report directly on your mobile device.</p>
+                    <button class="download-qr" id="download-qr">
+                        <span class="download-icon"><i class="fas fa-download"></i></span>
+                        Download QR Code
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card comments-section">
+            <h2 class="section-title">Comments (2)</h2>
+            <form action="" method="POST">
+            <div class="comment-form">
+                <input type="number" class="comment-input" name="mark"/>
+                <button class="comment-button">Grade this report on 10</button>
+            </div>
+            </form>
+            
+            <div class="comments-list">
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar">IF</div>
+                            <div class="comment-name">Ibrahim Fonyuy</div>
+                        </div>
+                        <div class="comment-date">Today at 10:23 AM</div>
+                    </div>
+                    <div class="comment-content">
+                        <p>Great progress keep up👌</p>
+                    </div>
+                </div>
+                
+                <div class="comment">
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar">SE</div>
+                            <div class="comment-name">Soh Eric</div>
+                        </div>
+                        <div class="comment-date">Yesterday at 4:15 PM</div>
+                    </div>
+                    <div class="comment-content">
+                        <p>I'm impressed on your work {{request.user.first_name}}</p>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        <div class="card related-reports">
+            <h2 class="section-title">Related Reports</h2>
+            
+            <div class="related-list">
+                
+                {% for report in reports  %}
+                    
+                
+                    
+                <a href="{% url 'report' report.id %}" class="related-item">
+                    <h3 class="related-title">{{report.title}}</h3>
+                    <div class="related-meta">
+                        <span>{{report.created}}</span>
+                        
+                    </div>
+                </a>
+                {% endfor %}
+                
+                
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon"><i class="fas fa-check-circle"></i></span>
+        <span class="toast-message" id="toast-message">Link copied to clipboard!</span>
+    </div>
+    
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+        
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            enableDarkMode();
+        } else {
+            enableLightMode();
+        }
+        
+        function enableDarkMode() {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+        
+        function enableLightMode() {
+            body.classList.add('light-mode');
+            body.classList.remove('dark-mode');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+        
+        // Share Functionality
+        const shareWhatsapp = document.getElementById('share-whatsapp');
+        const shareLinkedin = document.getElementById('share-linkedin');
+        const shareTwitter = document.getElementById('share-twitter');
+        const shareFacebook = document.getElementById('share-facebook');
+        const shareEmail = document.getElementById('share-email');
+        const copyLink = document.getElementById('copy-link');
+        const shareLink = document.getElementById('share-link');
+        const downloadQR = document.getElementById('download-qr');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        
+        // Report details for sharing
+        const reportTitle = "API Integration Progress - AntCode Hub Report";
+        const reportUrl = document.getElementById('share-link').textContent
+        const reportSummary = document.getElementById('summary').textContent
+        
+        // Show toast notification
+        function showToast(message) {
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Copy to clipboard
+        copyLink.addEventListener('click', () => {
+            navigator.clipboard.writeText(shareLink.textContent)
+                .then(() => {
+                    showToast('Link copied to clipboard!');
+                })
+                .catch(err => {
+                    showToast('Failed to copy link');
+                    console.error('Could not copy text: ', err);
+                });
+        });
+        
+        // Share on WhatsApp
+        shareWhatsapp.addEventListener('click', () => {
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(reportTitle + '\n\n' + reportSummary + '\n\n' + reportUrl)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+        
+        // Share on LinkedIn
+        shareLinkedin.addEventListener('click', () => {
+            const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(reportUrl)}`;
+            window.open(linkedinUrl, '_blank');
+        });
+        
+        // Share on Twitter
+        shareTwitter.addEventListener('click', () => {
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(reportTitle)}&url=${encodeURIComponent(reportUrl)}`;
+            window.open(twitterUrl, '_blank');
+        });
+        
+        // Share on Facebook
+        shareFacebook.addEventListener('click', () => {
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(reportUrl)}`;
+            window.open(facebookUrl, '_blank');
+        });
+        
+        // Share via Email
+        shareEmail.addEventListener('click', () => {
+            const emailSubject = reportTitle;
+            const emailBody = `${reportSummary}\n\nRead more: ${reportUrl}`;
+            const emailUrl = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = emailUrl;
+        });
+        
+        // Download QR Code
+        downloadQR.addEventListener('click', () => {
+            // In a real implementation, this would generate and download a PNG of the QR code
+            // For this demo, we'll just show a toast notification
+            showToast('QR Code downloaded');
+        });
+        
+        // Comment Form
+        const commentForm = document.querySelector('.comment-form');
+        const commentInput = document.querySelector('.comment-input');
+        const commentButton = document.querySelector('.comment-button');
+        const commentsList = document.querySelector('.comments-list');
+        
+        commentButton.addEventListener('click', () => {
+            const commentText = commentInput.value.trim();
+            
+            if (commentText) {
+                // Create new comment element
+                const newComment = document.createElement('div');
+                newComment.classList.add('comment');
+                
+                // Get current date and time
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                newComment.innerHTML = `
+                    <div class="comment-header">
+                        <div class="comment-author">
+                            <div class="comment-avatar">JD</div>
+                            <div class="comment-name">John Doe</div>
+                        </div>
+                        <div class="comment-date">Today at ${timeString}</div>
+                    </div>
+                    <div class="comment-content">
+                        <p>${commentText}</p>
+                    </div>
+                `;
+                
+                // Add to the top of the comments list
+                commentsList.insertBefore(newComment, commentsList.firstChild);
+                
+                // Clear input
+                commentInput.value = '';
+                
+                // Show success message
+                showToast('Comment posted successfully!');
+            }
+        });
+    </script>
+    
+</html>

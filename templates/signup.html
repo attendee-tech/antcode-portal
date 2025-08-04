@@ -560,6 +560,9 @@
             <div class="login-form-header">
                 <h2 class="login-form-title">Welcome!</h2>
                 <p class="login-form-subtitle">Please enter your credentials to create an account</p>
+                {% for message in messages  %}
+                    <p style="color: red;">{{message}}</p>
+                {% endfor %}
             </div>
             
             <form class="login-form" id="login-form" method="POST">

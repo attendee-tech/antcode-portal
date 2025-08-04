@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AntCode Hub - Student Dashboard</title>
+    <title>AntCode Hub - Mentor Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Import Fonts */
@@ -861,79 +860,56 @@
         }
     </style>
 </head>
-
 <body class="light-mode">
     <div class="app-container">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
+            
             {% include 'navbar.html' %}
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Header -->
+            
             {% include 'header.html' %}
 
             <!-- Content -->
             <div class="content">
-                <h1 class="page-title">Welcome back, {{request.user.first_name}} {{request.user.last_name}}!</h1>
-                <p class="page-subtitle">Here's an overview of your progress and upcoming tasks.</p>
+                <h1 class="page-title">Welcome back, {{ request.user.first_name }} {{ request.user.last_name }}!</h1>
+                <p class="page-subtitle">Here's an overview of your mentoring activities and mentee progress.</p>
 
                 <!-- Stats Overview -->
                 <div class="stats-grid">
-                    <!-- Stat Card 1 -->
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon purple">
-                                <i class="fas fa-tasks"></i>
+                                <i class="fas fa-users"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-label">number of Reports</div>
-                                <div class="stat-value">
-                                    {{reports_count}}
-                                    <!-- <span class="stat-change negative">
-                                        <i class="fas fa-arrow-down"></i> 2
-                                    </span> -->
-                                </div>
+                                <div class="stat-label">Total Mentees</div>
+                                <div class="stat-value">{{ students_count }}</div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Stat Card 2 -->
                     <div class="stat-card">
                         <div class="stat-header">
                             <div class="stat-icon green">
-                                <i class="fas fa-check-circle"></i>
+                                <i class="fas fa-file-alt"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-label">Projects</div>
-                                <div class="stat-value">
-                                    {{projects_count}}
-                                    <!-- <span class="stat-change positive">
-                                        <i class="fas fa-arrow-up"></i> 7
-                                    </span> -->
-                                </div>
+                                <div class="stat-label">Reports Reviewed</div>
+                                <div class="stat-value">{{ reports_count }}</div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Stat Card 3 -->
-                   
-
-                    <!-- Stat Card 4 -->
                     <div class="stat-card">
                         <div class="stat-header">
-                            <div class="stat-icon yellow">
-                                <i class="fas fa-star"></i>
+                            <div class="stat-icon blue">
+                                <i class="fas fa-tasks"></i>
                             </div>
                             <div class="stat-content">
-                                <div class="stat-label">Average Score</div>
-                                <div class="stat-value">
-                                    {{average_score}}%
-                                    <span class="stat-change positive">
-                                        <i class="fas fa-arrow-up"></i> {{reports_count}}%
-                                    </span>
-                                </div>
+                                <div class="stat-label">Tasks/Projects Created</div>
+                                <div class="stat-value">{{ tasks_count }}, {{projects_count}}</div>
                             </div>
                         </div>
                     </div>
@@ -942,159 +918,77 @@
                 <!-- Progress Section -->
                 <div class="section">
                     <div class="section-header">
-                        <h2 class="section-title">Your Progress</h2>
+                        <h2 class="section-title">Mentee Progress Overview</h2>
+                        {% comment %} <a href="{% url 'mentor_reports' %}" class="section-link">View All Reports</a> {% endcomment %}
                     </div>
                     <div class="progress-grid">
-                        <!-- Course Progress -->
-                        <div class="progress-card">
+                        {% for student in students %}
+                            <div class="progress-card">
+                            {% if student.user.profile_picture %}
+                            <div class="avatar"
+                                style="background-image: url('{{student.user.profile_picture.url}}'); background-position:center; background-size: cover;">
+                            </div>
+                            {% else %}
+                            <div class="avatar">{{student.user.name_abb}}</div>
+
+                            {% endif %}
                             <div class="progress-header">
-                                <h3 class="progress-title">{{request.user.option.name}} Course</h3>
-                                <span class="progress-percentage">{{average_score}}% Complete</span>
+                                <h3 class="progress-title">{{ student.user.first_name }} {{ student.user.last_name }}</h3>
+                                <span class="progress-percentage">{{ mentee.progress }}% Complete</span>
                             </div>
                             <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: {{average_score}}%"></div>
+                                <div class="progress-bar" style="width: {{ mentee.progress }}%"></div>
                             </div>
-                            
                             <div class="progress-details">
-                                <h4 class="progress-subtitle">Keep on Going 💪</h4>
+                                <h4 class="progress-subtitle">Recent Activity</h4>
                                 <div class="progress-item">
-                                    <svg class="progress-item-icon" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-                                        <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" />
-                                    </svg>
-                                    <div>
-                                        <div class="progress-item-content">The bar represent your overall preogress on completed reports</div>
-                                        <div class="progress-item-subtitle">Create strong reports on your works</div>
-                                    </div>
+                                    <span class="progress-item-content">{{ mentee.last_activity }}</span>
                                 </div>
                             </div>
-                            <button class="button" onclick="window.location.href='#task-tab'">Continue Learning</button>
-                        </div>
-
-                        <!-- Skills Progress -->
-                        <div class="progress-card">
-                            <h3 class="progress-title">Skills Progress</h3>
-                            <div class="progress-details">
-                                <div class="skill-item">
-
-                                    <div class="skill-header">
-                                        <span class="skill-name">{{request.user.skills}}</span>
-                                        <span class="skill-percentage">{{skill_score}}%</span>
-                                    </div>
-                                    <div class="skill-bar-container">
-                                        <div class="skill-bar html" style="width: {{skill_score}}%;"></div>
-                                    </div>
-                                    <p style="padding: 20px;" class="progress-item-content ">Your skills are increased as you move forward, Kepp coding and sending your reports complete</p>
-                                </div>
-                                
-                                
-                            </div>
-                            <button class="button"onclick="window.location.href='{% url 'profile' %}'">View Skills Details</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Upcoming Tasks -->
-                <div class="section" id="task-tab">
-                    <div class="section-header">
-                        <h2 class="section-title">Upcoming Tasks</h2>
-                        
-                    </div>
-                    <div class="tasks-list">
-                        <div class="task-item">
-                            <div class="task-header">
-                                <div class="task-title-container">
-                                    <input type="checkbox" class="task-checkbox" id="task-1">
-                                    <label for="task-1" class="task-title">Task: You're required to fill and submit a daily report of what you've learnt so far at AntcodeHub starting from monday 24th june 2025 to saturday 29 june 2025.
-                                        Maximum of seven reports before the end of this week with a well defined and structured content highlighting and indicating what you did, your difficulties and when you eill work on next either personal or in group
-                                    <a href="{% url 'sample' %}" style="color: blue;">Click here to view a sample Report</a></label>
-                                </div>
-                                <span class="task-badge red">Due:29/06/2025</span>
-                            </div>
-                            <div class="task-details">
-                                <div class="task-tag">
-                                    <i class="fas fa-code task-tag-icon"></i>
-                                    <span>Report submittion</span>
-                                </div>
-                                <div class="task-tag">
-                                    <i class="fas fa-clock task-tag-icon"></i>
-                                    <span>Due by saturday 29th june 2025 00:00am</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {% for task in tasks  %}
-                        <div class="task-item">
-                            <div class="task-header">
-                                <div class="task-title-container">
-                                    <input type="checkbox" class="task-checkbox" id="task-1">
-                                    <label for="task-1" class="task-title">Task: {{ task.name }}
-                                        {{ task.content }}
-                                    
-                                </div>
-                                <span class="task-badge red">Due:{{task.due_date}}</span>
-                            </div>
-                            <div class="task-details">
-                                <div class="task-tag">
-                                    <i class="fas fa-code task-tag-icon"></i>
-                                    <span>Report submittion</span>
-                                </div>
-                                <div class="task-tag">
-                                    <i class="fas fa-clock task-tag-icon"></i>
-                                    <span>Due by {{task.due_date}}</span>
-                                </div>
-                            </div>
+                            {% comment %} <a class="button" href="{% url 'mentor_mentee_detail' mentee.id %}">View Details</a> {% endcomment %}
                         </div>
                         {% empty %}
-                        <p>No task added yet!</p>
-                        
-                            
+                        <div class="progress-card">
+                            <div class="progress-header">
+                                <h3 class="progress-title">No mentees assigned yet.</h3>
+                            </div>
+                        </div>
                         {% endfor %}
-                            
-                        
-                        
-                        <!-- <div class="task-footer">
-                            <button class="add-task-button">
-                                <i class="fas fa-plus add-task-icon"></i>
-                                Add New Task
-                            </button>
-                        </div> -->
                     </div>
                 </div>
 
-                <!-- Recent Submissions -->
+                <!-- Recent Reports -->
                 <div class="section">
                     <div class="section-header">
-                        <h2 class="section-title">Recent Submissions</h2>
-                        <a href="{% url 'reports' %}" class="section-link">View All</a>
+                        <h2 class="section-title">Recent Reports</h2>
+                        {% comment %} <a href="{% url 'mentor_reports' %}" class="section-link">View All</a> {% endcomment %}
                     </div>
                     <div class="tasks-list">
-                        
-                        {% for report in reports  %}
-                            
-                        
-                            
-                        <div class="submission-item">
+                        {% for report in reports %}
+                        <div class="submission-item" onclick="window.location.href='{% url 'report-view' report.id %}'" style="cursor: pointer;">
                             <div class="submission-header">
-                                <h3 class="submission-title">{{report.title}}</h3>
-                                <span class="task-badge green">Graded: A</span>
+                                <h3 class="submission-title">{{ report.title }}</h3>
+                                <span class="task-badge green">By {{ report.student.first_name }} {{report.student.last_name}}</span>
                             </div>
                             <div class="task-details">
                                 <div class="task-tag">
                                     <i class="fas fa-file-code task-tag-icon"></i>
-                                    <span>{{report.tags}}</span>
+                                    <span>{{ report.tags }}</span>
                                 </div>
                                 <div class="task-tag">
                                     <i class="fas fa-calendar task-tag-icon"></i>
-                                    <span>Submitted on {{report.created}}</span>
+                                    <span>Submitted on {{ report.created }}</span>
                                 </div>
                             </div>
                         </div>
+                        {% empty %}
+                        <div class="submission-item">
+                            <div class="submission-header">
+                                <h3 class="submission-title">No reports submitted yet.</h3>
+                            </div>
+                        </div>
                         {% endfor %}
-                        
-                    </div>
+            </div>
                 </div>
             </div>
         </div>
@@ -1106,9 +1000,19 @@
         <i class="fas fa-times"></i>
     </button>
     <div class="mobile-sidebar" id="mobile-sidebar">
-        
-            
-        
+        {% comment %} <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><i class="fas fa-user-tie"></i></span>
+                <span class="logo-text">AntCode</span>
+            </div>
+        </div>
+        <div class="sidebar-content">
+            <a href="{% url 'mentor_home' %}" class="sidebar-link">Dashboard</a>
+            <a href="{% url 'mentor_reports' %}" class="sidebar-link">View Reports</a>
+            <a href="{% url 'mentor_create_task' %}" class="sidebar-link">Create Task/Project</a>
+            <a href="{% url 'mentor_mentees' %}" class="sidebar-link">Manage Mentees</a>
+            <a href="{% url 'logout' %}" class="sidebar-link">Logout</a>
+        </div> {% endcomment %}
         {% include 'navbar.html' %}
     </div>
 
@@ -1201,7 +1105,5 @@
             });
         });
     </script>
-    <script>(function () { function c() { var b = a.contentDocument || a.contentWindow.document; if (b) { var d = b.createElement('script'); d.innerHTML = "window.__CF$cv$params={r:'94ea333355de6d74',t:'MTc0OTc0MDI0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);"; b.getElementsByTagName('head')[0].appendChild(d) } } if (document.body) { var a = document.createElement('iframe'); a.height = 1; a.width = 1; a.style.position = 'absolute'; a.style.top = 0; a.style.left = 0; a.style.border = 'none'; a.style.visibility = 'hidden'; document.body.appendChild(a); if ('loading' !== document.readyState) c(); else if (window.addEventListener) document.addEventListener('DOMContentLoaded', c); else { var e = document.onreadystatechange || function () { }; document.onreadystatechange = function (b) { e(b); 'loading' !== document.readyState && (document.onreadystatechange = e, c()) } } } })();</script>
 </body>
-
 </html>
